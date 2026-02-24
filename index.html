@@ -222,8 +222,8 @@
   .stat-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
   .stat-val { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--text); }
   .stat-label { font-size: 12px; color: var(--text-sec); font-weight: 500; }
-  .stat-1 { top: 10%; left: -60px; }
-  .stat-2 { bottom: 15%; right: -40px; }
+  .stat-1 { top: 8%; left: -30px; }
+  .stat-2 { bottom: 12%; right: -20px; }
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
@@ -496,8 +496,17 @@
     .hero-visual { order: -1; }
     .hero-img-wrap { width: 260px; height: 260px; }
     .hero-img { width: 260px; height: 260px; }
-    .stat-1 { left: -20px; }
-    .stat-2 { right: -10px; }
+    .stat-1 {
+       top: -10px;
+       left: 50%;
+       transform: translateX(-120%);
+}
+
+     .stat-2 {
+       bottom: -10px;
+       left: 50%;
+       transform: translateX(20%);
+}
     .section-heading { font-size: 32px; }
     .about-grid, .project-card, .contact-grid { grid-template-columns: 1fr; }
     .project-img { min-height: 220px; }
