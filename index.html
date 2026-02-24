@@ -222,8 +222,17 @@
   .stat-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
   .stat-val { font-family: 'Fraunces', serif; font-size: 18px; font-weight: 700; color: var(--text); }
   .stat-label { font-size: 12px; color: var(--text-sec); font-weight: 500; }
-  .stat-1 { top: 8%; left: -30px; }
-  .stat-2 { bottom: 12%; right: -20px; }
+  .stat-1 {
+  top: 20%;
+  left: 0;
+  transform: translateX(-70%);
+}
+
+  .stat-2 {
+  bottom: 20%;
+  right: 0;
+  transform: translateX(70%);
+}
   @keyframes float {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
@@ -494,16 +503,21 @@
     .hero-inner { grid-template-columns: 1fr; gap: 60px; }
     .hero-h1 { font-size: 42px; letter-spacing: -1px; }
     .hero-visual { order: -1; }
-    .hero-img-wrap { width: 260px; height: 260px; }
+    .hero-img-wrap {
+  position: relative;
+  width: 320px;
+  height: 320px;
+  overflow: visible;
+}
     .hero-img { width: 260px; height: 260px; }
     .stat-1 {
-       top: -10px;
+       top: -15px;
        left: 50%;
        transform: translateX(-120%);
 }
 
      .stat-2 {
-       bottom: -10px;
+       bottom: -15px;
        left: 50%;
        transform: translateX(20%);
 }
