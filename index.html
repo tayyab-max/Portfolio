@@ -159,7 +159,8 @@ section.alt{background:var(--bg-alt)}
 }
 
 /* Hero Visual */
-.hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+/* flex-direction:column so the inline stat row can sit below the img-wrap */
+.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;flex-direction:column}
 .hero-img-wrap{
   position:relative;width:340px;height:340px;
   display:flex;align-items:center;justify-content:center;
@@ -223,6 +224,20 @@ section.alt{background:var(--bg-alt)}
 .stat-dot{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0}
 .stat-val{font-family:'Fraunces',serif;font-size:18px;font-weight:700;color:var(--text)}
 .stat-label{font-size:12px;color:var(--text-sec);font-weight:500}
+
+/* Inline stat row — hidden by default, shown on ≤420px via JS */
+.stat-inline-row{
+  display:none;flex-direction:row;gap:10px;
+  justify-content:center;margin-top:20px;
+  padding:0 8px;width:100%;
+}
+.stat-inline-pill{
+  background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);
+  border-radius:14px;padding:10px 14px;
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 4px 16px rgba(15,23,42,0.1);
+  border:1px solid rgba(255,255,255,0.9);flex:1;
+}
 
 /* ── ABOUT ── */
 .about-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
@@ -502,17 +517,36 @@ footer span{color:var(--green)}
   .stat-card.stat-1{left:-8%}
   .stat-card.stat-2{right:-8%}
 }
+
+/* ── TABLET / MOBILE (≤900px) ── */
 @media (max-width:900px){
   section{padding:80px 0}
-  .hero-inner{grid-template-columns:1fr;gap:48px}
+
+  /* FIX 1: Extra top padding so the rings never hide behind the navbar */
+  #hero{padding-top:110px;padding-bottom:60px;min-height:auto}
+
+  .hero-inner{grid-template-columns:1fr;gap:0}
   .hero-left{order:2;text-align:center}
   .hero-btns{justify-content:center}
   .hero-desc{margin-left:auto;margin-right:auto}
-  .hero-visual{order:1;justify-content:center}
-  .hero-img-wrap{width:280px;height:280px}
-  .hero-img{width:250px;height:250px}
-  .stat-card.stat-1{top:auto;bottom:calc(100% + 12px);left:50%;transform:translateX(-110%)}
-  .stat-card.stat-2{bottom:auto;top:calc(100% + 12px);right:50%;transform:translateX(110%)}
+
+  /* Visual block: horizontal padding creates the space the cards float into */
+  .hero-visual{order:1;justify-content:center;padding:20px 90px 24px}
+  .hero-img-wrap{width:240px;height:240px}
+  .hero-img{width:215px;height:215px}
+
+  /* FIX 2: Cards sit LEFT and RIGHT of the image, vertically centred — no overlap below */
+  .stat-card.stat-1{
+    top:50%;left:0;
+    transform:translate(-50%,-50%);
+    animation:floatA 4s ease-in-out infinite;
+  }
+  .stat-card.stat-2{
+    top:50%;right:0;
+    transform:translate(50%,-50%);
+    animation:floatB 4s ease-in-out infinite 1.5s;
+  }
+
   .about-grid,.contact-grid{grid-template-columns:1fr}
   .project-card{grid-template-columns:1fr}
   .project-img{min-height:240px}
@@ -524,27 +558,36 @@ footer span{color:var(--green)}
   .section-heading{font-size:30px}
   .about-visual{padding:32px 24px}
 }
+
+/* ── SMALL MOBILE (≤640px) ── */
 @media (max-width:640px){
+  #hero{padding-top:100px;padding-bottom:48px}
   .hero-h1{font-size:36px;letter-spacing:-1px}
   .section-heading{font-size:26px}
+  .hero-visual{padding:16px 80px 20px}
+  .hero-img-wrap{width:210px;height:210px}
+  .hero-img{width:188px;height:188px}
+  .stat-card{padding:8px 12px}
+  .stat-val{font-size:14px}
+  .stat-label{font-size:11px}
   .skills-grid,.services-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .metrics-row{flex-direction:row}
   .about-stat-grid{grid-template-columns:1fr 1fr}
   .whatsapp-float .wa-text{display:none}
   .whatsapp-float{padding:0;width:56px;height:56px;justify-content:center}
-  .hero-img-wrap{width:240px;height:240px}
-  .hero-img{width:210px;height:210px}
-  .stat-card{padding:9px 13px}
-  .stat-val{font-size:15px}
   .project-body{padding:28px 24px}
 }
-@media (max-width:400px){
+
+/* ── VERY SMALL MOBILE (≤420px) ── */
+/* Absolute cards hidden via JS on this breakpoint; inline row shown instead */
+@media (max-width:420px){
   .container{padding:0 16px}
   .hero-h1{font-size:30px}
+  .hero-visual{padding:16px 0 0}
+  .hero-img-wrap{width:190px;height:190px}
+  .hero-img{width:170px;height:170px}
   .about-stat-grid{grid-template-columns:1fr}
-  .stat-card.stat-1{transform:translateX(-105%)}
-  .stat-card.stat-2{transform:translateX(105%)}
 }
 </style>
 </head>
@@ -606,14 +649,32 @@ footer span{color:var(--green)}
           <div class="hero-img">
             <img src="images/image1.webp" alt="Muhammad Tayyab Atta" fetchpriority="high" decoding="async">
           </div>
-          <div class="stat-card stat-1">
+          <!-- Absolute stat cards: hidden on ≤420px by JS, replaced with inline row below -->
+          <div class="stat-card stat-1" id="statCard1">
             <div class="stat-dot"></div>
             <div>
               <div class="stat-val">312%</div>
               <div class="stat-label">Traffic Growth</div>
             </div>
           </div>
-          <div class="stat-card stat-2">
+          <div class="stat-card stat-2" id="statCard2">
+            <div class="stat-dot"></div>
+            <div>
+              <div class="stat-val">120+</div>
+              <div class="stat-label">Keywords Ranked</div>
+            </div>
+          </div>
+        </div>
+        <!-- Fallback inline row for very small screens only (shown via JS) -->
+        <div class="stat-inline-row" id="statInlineRow">
+          <div class="stat-inline-pill">
+            <div class="stat-dot"></div>
+            <div>
+              <div class="stat-val">312%</div>
+              <div class="stat-label">Traffic Growth</div>
+            </div>
+          </div>
+          <div class="stat-inline-pill">
             <div class="stat-dot"></div>
             <div>
               <div class="stat-val">120+</div>
@@ -1083,6 +1144,19 @@ footer span{color:var(--green)}
     });
   },{threshold:0.5});
   counterEls.forEach(function(el){counterIO.observe(el);});
+
+  // Very small screens (≤420px): swap absolute cards for inline row
+  var statCard1=document.getElementById('statCard1');
+  var statCard2=document.getElementById('statCard2');
+  var statInlineRow=document.getElementById('statInlineRow');
+  function updateStatLayout(){
+    var tiny=window.innerWidth<=420;
+    if(statCard1) statCard1.style.display=tiny?'none':'flex';
+    if(statCard2) statCard2.style.display=tiny?'none':'flex';
+    if(statInlineRow) statInlineRow.style.display=tiny?'flex':'none';
+  }
+  updateStatLayout();
+  window.addEventListener('resize',updateStatLayout,{passive:true});
 
   // Floating WhatsApp button
   var waBtn=document.getElementById('whatsappFloat');
