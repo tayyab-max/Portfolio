@@ -159,8 +159,12 @@ section.alt{background:var(--bg-alt)}
 }
 
 /* Hero Visual */
-/* flex-direction:column so the inline stat row can sit below the img-wrap */
-.hero-visual{position:relative;display:flex;justify-content:center;align-items:center;flex-direction:column}
+.hero-visual{
+  position:relative;display:flex;
+  justify-content:center;align-items:center;
+  flex-direction:column;
+}
+/* On desktop: cards are absolute children of hero-visual, img-wrap is centred */
 .hero-img-wrap{
   position:relative;width:340px;height:340px;
   display:flex;align-items:center;justify-content:center;
@@ -194,7 +198,7 @@ section.alt{background:var(--bg-alt)}
   decoding:async;
 }
 
-/* Stat cards — glassmorphism */
+/* Stat cards — glassmorphism, absolute on desktop */
 .stat-card{
   position:absolute;z-index:10;
   background:rgba(255,255,255,0.85);
@@ -522,7 +526,7 @@ footer span{color:var(--green)}
 @media (max-width:900px){
   section{padding:80px 0}
 
-  /* FIX 1: Extra top padding so the rings never hide behind the navbar */
+  /* FIX 1: Extra top padding so rings clear the navbar */
   #hero{padding-top:110px;padding-bottom:60px;min-height:auto}
 
   .hero-inner{grid-template-columns:1fr;gap:0}
@@ -530,22 +534,31 @@ footer span{color:var(--green)}
   .hero-btns{justify-content:center}
   .hero-desc{margin-left:auto;margin-right:auto}
 
-  /* Visual block: horizontal padding creates the space the cards float into */
-  .hero-visual{order:1;justify-content:center;padding:20px 90px 24px}
-  .hero-img-wrap{width:240px;height:240px}
-  .hero-img{width:215px;height:215px}
+  /* FIX 2: hero-visual becomes a flex ROW so cards sit naturally left and right of the image */
+  .hero-visual{
+    order:1;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    padding:20px 8px 28px;
+    gap:12px;
+    width:100%;
+    position:relative;
+  }
 
-  /* FIX 2: Cards sit LEFT and RIGHT of the image, vertically centred — no overlap below */
-  .stat-card.stat-1{
-    top:50%;left:0;
-    transform:translate(-50%,-50%);
-    animation:floatA 4s ease-in-out infinite;
+  /* Cards are no longer absolutely positioned on mobile — they sit in the flex row */
+  .stat-card{
+    position:static;
+    transform:none !important;
+    animation:none !important;
+    flex-shrink:0;
+    padding:10px 12px;
   }
-  .stat-card.stat-2{
-    top:50%;right:0;
-    transform:translate(50%,-50%);
-    animation:floatB 4s ease-in-out infinite 1.5s;
-  }
+  .stat-card.stat-1{animation:none}
+  .stat-card.stat-2{animation:none}
+
+  .hero-img-wrap{width:200px;height:200px;flex-shrink:0}
+  .hero-img{width:178px;height:178px}
 
   .about-grid,.contact-grid{grid-template-columns:1fr}
   .project-card{grid-template-columns:1fr}
@@ -564,12 +577,12 @@ footer span{color:var(--green)}
   #hero{padding-top:100px;padding-bottom:48px}
   .hero-h1{font-size:36px;letter-spacing:-1px}
   .section-heading{font-size:26px}
-  .hero-visual{padding:16px 80px 20px}
-  .hero-img-wrap{width:210px;height:210px}
-  .hero-img{width:188px;height:188px}
-  .stat-card{padding:8px 12px}
-  .stat-val{font-size:14px}
-  .stat-label{font-size:11px}
+  .hero-visual{gap:8px;padding:16px 4px 24px}
+  .hero-img-wrap{width:170px;height:170px}
+  .hero-img{width:152px;height:152px}
+  .stat-card{padding:8px 10px}
+  .stat-val{font-size:13px}
+  .stat-label{font-size:10px}
   .skills-grid,.services-grid{grid-template-columns:1fr}
   .form-row{grid-template-columns:1fr}
   .metrics-row{flex-direction:row}
@@ -580,13 +593,14 @@ footer span{color:var(--green)}
 }
 
 /* ── VERY SMALL MOBILE (≤420px) ── */
-/* Absolute cards hidden via JS on this breakpoint; inline row shown instead */
+/* Revert to column layout, show inline row below image instead */
 @media (max-width:420px){
   .container{padding:0 16px}
   .hero-h1{font-size:30px}
-  .hero-visual{padding:16px 0 0}
+  .hero-visual{flex-direction:column;padding:16px 0 0;gap:0}
   .hero-img-wrap{width:190px;height:190px}
   .hero-img{width:170px;height:170px}
+  /* Cards hidden on this size via JS; inline row shown instead */
   .about-stat-grid{grid-template-columns:1fr}
 }
 </style>
@@ -642,6 +656,14 @@ footer span{color:var(--green)}
         </div>
       </div>
       <div class="hero-visual fade-in fade-in-delay-2">
+        <!-- Stat cards are siblings of img-wrap so on mobile they anchor to the full visual container -->
+        <div class="stat-card stat-1" id="statCard1">
+          <div class="stat-dot"></div>
+          <div>
+            <div class="stat-val">312%</div>
+            <div class="stat-label">Traffic Growth</div>
+          </div>
+        </div>
         <div class="hero-img-wrap">
           <div class="ring ring-1"></div>
           <div class="ring ring-2"></div>
@@ -649,20 +671,12 @@ footer span{color:var(--green)}
           <div class="hero-img">
             <img src="images/image1.webp" alt="Muhammad Tayyab Atta" fetchpriority="high" decoding="async">
           </div>
-          <!-- Absolute stat cards: hidden on ≤420px by JS, replaced with inline row below -->
-          <div class="stat-card stat-1" id="statCard1">
-            <div class="stat-dot"></div>
-            <div>
-              <div class="stat-val">312%</div>
-              <div class="stat-label">Traffic Growth</div>
-            </div>
-          </div>
-          <div class="stat-card stat-2" id="statCard2">
-            <div class="stat-dot"></div>
-            <div>
-              <div class="stat-val">120+</div>
-              <div class="stat-label">Keywords Ranked</div>
-            </div>
+        </div>
+        <div class="stat-card stat-2" id="statCard2">
+          <div class="stat-dot"></div>
+          <div>
+            <div class="stat-val">120+</div>
+            <div class="stat-label">Keywords Ranked</div>
           </div>
         </div>
         <!-- Fallback inline row for very small screens only (shown via JS) -->
@@ -1145,7 +1159,7 @@ footer span{color:var(--green)}
   },{threshold:0.5});
   counterEls.forEach(function(el){counterIO.observe(el);});
 
-  // Very small screens (≤420px): swap absolute cards for inline row
+  // On ≤420px: flex-direction is column again, so hide flex-row cards and show inline row
   var statCard1=document.getElementById('statCard1');
   var statCard2=document.getElementById('statCard2');
   var statInlineRow=document.getElementById('statInlineRow');
